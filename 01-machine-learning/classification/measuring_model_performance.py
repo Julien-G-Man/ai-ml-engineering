@@ -22,7 +22,7 @@ X = churn_df[["total_day_charge", "total_eve_charge"]].values
 y = churn_df["churn"].values
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X ,y, test_size=0.3,                             # 30% training, 70% test
+    X ,y, test_size=0.3,                             # 70% training, 30% test
     random_state=21, stratify=y
 )
 
