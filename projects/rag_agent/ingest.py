@@ -6,20 +6,13 @@ from engine import RAGEngine, NAMESPACE
 
 load_dotenv()
 
-rag_engine = None
-
-def get_rag_engine() -> RAGEngine:
-    global rag_engine
-    if rag_engine is None:
-        rag_engine = RAGEngine()
-    return rag_engine
-
 BASE_DIR = Path(__file__).resolve().parents[2]
 CSV_PATH = BASE_DIR / "files" / "youtube_rag_data.csv"
 
+
 def ingest_indexes():
     youtube_df = pd.read_csv(CSV_PATH)
-    rag_engine = get_rag_engine()
+    rag_engine = RAGEngine()
     index = rag_engine.index
     batch_limit = 100
 
@@ -57,6 +50,6 @@ def ingest_indexes():
 
     return index.describe_index_stats()
 
+
 if __name__ == "__main__":
     print(ingest_indexes())
-    

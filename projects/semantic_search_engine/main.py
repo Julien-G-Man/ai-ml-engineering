@@ -1,6 +1,6 @@
 from engine import v_engine
 from fastapi import FastAPI
-from schemas import SearchQuery, SearchMatch, SearchResponse, EmbeddingQuery, EmbeddingResponse
+from .schemas import SearchQuery, SearchMatch, SearchResponse, EmbeddingQuery, EmbeddingResponse
 
 app = FastAPI()
 

@@ -1,6 +1,8 @@
 .env
 .venv/
 venv/
+playground/
 __pycache__/
 *.py[cod]
 .pytest_cache
+redirection.md
