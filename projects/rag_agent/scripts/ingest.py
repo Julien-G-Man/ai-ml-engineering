@@ -2,7 +2,7 @@ import pandas as pd
 from uuid import uuid4
 from pathlib import Path
 from dotenv import load_dotenv
-from engine import RAGEngine, NAMESPACE
+from app.engine import RAGEngine, NAMESPACE
 
 load_dotenv()
 

@@ -1,9 +1,12 @@
-from repo import store
-from engine import RAGEngine, Agent
+import logging
+from app.repo import store
+from app.engine import RAGEngine, Agent
 from fastapi import FastAPI, HTTPException, Depends
 from .schemas import ChatQuery, ChatResponse, EmbeddingQuery, EmbeddingResponse
 
-app = FastAPI()
+logger = logging.getLogger(__name__)
+
+app = FastAPI(title="RAG Agent")
 
 agent = None
 rag_engine = None
@@ -19,7 +22,9 @@ def get_agent() -> Agent:
 def get_rag_engine() -> RAGEngine:
     global rag_engine
     if rag_engine is None:
+        logger.info("Creating RAG Engine...")
         rag_engine = RAGEngine()
+        rag_engine.load()
     return rag_engine
 
 
@@ -52,8 +57,6 @@ def embed(query: EmbeddingQuery,
         response = rag_engine.create_embeddings(query.text)
         embedding = response.data[0].embedding
         return EmbeddingResponse(embedding=embedding)
-    except ValueError as e:
-        raise ValueError(f"Error creating embeddings: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
