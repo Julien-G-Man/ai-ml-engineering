@@ -21,8 +21,7 @@ class RAGEngine:
         self._is_loaded = False
         self.openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         
-    def load(self) -> bool: 
-        """Load the Pinecone index and set up LlamaIndex. Called once at startup.""" 
+    def load_index(self) -> bool: 
         try:    
             pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY')) 
 

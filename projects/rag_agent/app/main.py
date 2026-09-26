@@ -24,13 +24,13 @@ def get_rag_engine() -> RAGEngine:
     if rag_engine is None:
         logger.info("Creating RAG Engine...")
         rag_engine = RAGEngine()
-        rag_engine.load()
+        rag_engine.load_index()
     return rag_engine
 
 
 @app.get("/")
 def root():
-    return {"message": "RAG chatbot API"}
+    return {"message": "RAG Agent API"}
 
 
 @app.post("/generate")
@@ -43,7 +43,7 @@ def generate_answer(
         documents, sources = rag_engine.retrieve(query.text, top_k=3)
         context_prompt = agent.build_prompt_with_context(query.text, documents)
         response = agent.generate_response(context_prompt, sources)
-        store.save_message(query.text, response)
+        store.save_conversation(query.text, response)
         return ChatResponse(response=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -61,7 +61,23 @@ def embed(query: EmbeddingQuery,
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/past_msg")
+@app.get("/past_messages")
 def get_past_messages():
-    past_msg = store.get_past_messages()
+    past_msg = store.get_past_conversations()
     return {"past_msg": past_msg}
+
+
+
+@app.delete("/past_messages/delete")
+def clear_all_past_conversations():
+    store.clear_past_conversations()
+    return {"status": "ok", "message": "All past conversations cleared successfully!"}
+
+
+@app.delete("/past_messages/delete/<id>")
+def clear_past_conversation(id: int):
+    try:
+        store.clear_single_conversation(id)
+        return {"status": "ok", "message": f"conversation deleted successfully!"}
+    except Exception as e:
+        raise HTTPException(status=500, detail=str(e))
