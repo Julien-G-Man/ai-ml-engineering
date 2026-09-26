@@ -4,11 +4,16 @@ import matplotlib.pyplot as plt
 
 
 def sigmoid(x):
+    """Reduce the activation to a number between 0 and 1"""
     return 1 / (1 + np.exp(-x))
 
 def sigmoid_derivative(x):
     s = sigmoid(x)
     return s * (1 - s)
+
+def ReLU(a: np.array) -> bool:
+    """Activation is either active or inactive"""
+    return max(0, a.all())
 
 
 class SimpleNeuralNet:
@@ -40,16 +45,20 @@ class SimpleNeuralNet:
         dW1 = np.dot(X.T, dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
         
+        # Adjust parameters
         self.W2 -= lr * dW2
         self.b2 -= lr * db2
         self.W1 -= lr * dW1
         self.b1 -= lr * db1
         
         
-    def train(self, X, y, epochs=1000, lr=0.1):
+    def train(self, X, y, epochs=2000, lr=0.1):
+        """ Train network to find the right weights and biases to get the desired output.
+            The cost/loss is a measure of how lousy the network is and 
+            how badly the system should feel"""
         for epoch in range(epochs):
-            output = self.forward(X)
-            loss = np.mean((output - y) ** 2)
+            output = self.forward(X)           # trash output
+            loss = np.mean((output - y) ** 2)  # loss function
             self.loss_history.append(loss)
             self.backward(X, y, output, lr)
             
@@ -58,11 +67,12 @@ class SimpleNeuralNet:
         
         
     def predict(self, X):
+        """Predict output based on trained parameters"""
         output = self.forward(X)
         return (output > 0.5).astype(int)
 
 
-def plot_loss(loss_history):
+def plot_loss_curve(loss_history):
     plt.figure(figsize=(8, 5))
     plt.plot(loss_history)
     plt.xlabel("Epoch")
@@ -88,6 +98,7 @@ def main():
     ])
 
     # Labels: 1 = exercise, 0 = no exercise
+    # this is the expected output vector
     y = np.array([
         [1],
         [0],
@@ -100,14 +111,16 @@ def main():
     nn = SimpleNeuralNet(in_size=3, hidden_size=4, out_size=1)
     nn.train(X, y, epochs=1000, lr=0.1)
 
-    person_features = np.array([[7, 2, 0.3]])
-    prediction_prob = nn.forward(person_features)
+    person_features  = np.array([[7, 2, 0.3]])
+    prediction_prob  = nn.forward(person_features)
     prediction_class = nn.predict(person_features)
+    average_loss     = sum(nn.loss_history) / len(nn.loss_history)
 
     print(f"\nPredicted probability of exercising: {prediction_prob}")
     print(f"Predicted class: {prediction_class} - ({_class(prediction_class)})")
+    print(f"\nAverage loss/cost: {average_loss}")
 
-    plot_loss(nn.loss_history)
+    plot_loss_curve(nn.loss_history)
 
 
 if __name__ == "__main__":
