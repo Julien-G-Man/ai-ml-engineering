@@ -12,6 +12,7 @@ anthropic
 transformers
 datasets
 torch
+tensorflow
 
 # UI
 panel
@@ -22,6 +23,7 @@ pinecone
 weaviate-client
 pgvector
 psycopg[binary]
+llama-index
 
 # LangChain ecosystem
 langchain
@@ -32,6 +34,13 @@ langchain-community
 langchain-pinecone
 langchain-postgres
 langgraph
+
+# agents
+tavily
+crewai
+crewai-tools
+pyautogen
+
 
 # API serving
 fastapi

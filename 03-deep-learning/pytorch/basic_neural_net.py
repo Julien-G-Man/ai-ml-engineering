@@ -31,10 +31,10 @@ def main():
         optimizer.step()
 
     print("Training Complete.")
-    save_model(MODEL_PATH)
+    save_model_state(MODEL_PATH)
     
 
-def save_model(model_path):
+def save_model_state(model_path):
     torch.save(model.state_dict(), model_path)
     
 
