@@ -39,6 +39,7 @@ langgraph
 tavily
 crewai
 crewai-tools
+autogen
 pyautogen
 
 
