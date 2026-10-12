@@ -31,11 +31,11 @@ def generate_response(input: str):
         input=input,
         text_format=DetailedQuizResult
     )
-    return response
+    return response.output_parsed
 
 
 def main(input):
-    result = generate_response(input).output_parsed
+    result: DetailedQuizResult = generate_response(input)
     print(type(result))
     print(f"Score: {result.score}/10")
     print(f"Passed: {result.passed}")

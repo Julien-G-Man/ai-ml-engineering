@@ -61,7 +61,7 @@ def stream_with_tool_call(prompt: str):
     
 prompt = """Explain how a neural network learns concisely for a child"""
 
-def main(prompt):
+def main():
     streaming_response(prompt)
     
 

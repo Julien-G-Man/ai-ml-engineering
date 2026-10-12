@@ -10,7 +10,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 sys_prompt = "You are a helpful Teacher who provides concise, personalized explanations. Be very brief."
 
-def response(input: str, prev_resp_id=None):
+def response(input: str, prev_resp_id: str | None = None):
     prev_id = prev_resp_id if prev_resp_id is not None else None
     return client.responses.create(
         model="gpt-5.4-mini",

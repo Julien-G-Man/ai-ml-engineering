@@ -37,7 +37,7 @@ def classify():
     
     closest = find_closest(article_embeddings, class_embeddings)
     label = topics[closest['index']]['label']
-    print(label)
+    return label
     
 
 def find_closest(query_vector, embeddings):
@@ -49,4 +49,5 @@ def find_closest(query_vector, embeddings):
 
 
 if __name__ == "__main__":
-    classify()
+    label = classify()
+    print(label)

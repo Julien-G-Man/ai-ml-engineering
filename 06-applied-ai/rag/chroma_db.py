@@ -5,6 +5,7 @@ import chromadb
 import tiktoken
 from pathlib import Path
 from dotenv import load_dotenv
+from chromadb import Collection, PersistentClient
 from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 
 load_dotenv()
@@ -13,7 +14,7 @@ logger = logging.getLogger("name")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 NETFLIX_TITLES_PATH = Path(__file__).resolve().parents[2] / "files" / "netflix_titles.csv"
 
-client = chromadb.PersistentClient(path="./chroma_data")
+client = PersistentClient(path="./chroma_data")
 
 
 def get_or_create_collection(collection_name: str):
@@ -25,31 +26,27 @@ def get_or_create_collection(collection_name: str):
         )
     )
     
-def insert_embeddings(collection, show_ids: list[str], descriptions: list[str], metadatas: list[dict] | None = None):
+def insert_embeddings(collection: Collection, show_ids: list[str], descriptions: list[str], metadatas: list[dict] | None = None):
     """Send show descriptions to Chroma. Chroma takes care of embedding them."""
     add_args = {
         "ids": show_ids,
         "documents": descriptions,
     }
-
     if metadatas is not None:
         add_args["metadatas"] = metadatas
-
     collection.add(**add_args)
     
-def query_collection(collection, texts: list[str]):
+def query_collection(collection: Collection, texts: list[str]):
     if isinstance(texts, str):
         texts = [texts]
-        
     return collection.query(
         query_texts=texts,
         n_results=2
     )
     
-def query_with_metadatas(collection, show_ids: str | list[str]):
+def query_with_metadatas(collection: Collection, show_ids: str | list[str]):
     if isinstance(show_ids, str):
         show_ids = [show_ids]
-
     reference_texts = collection.get(ids=show_ids)["documents"]
     return collection.query(
         query_texts = reference_texts,
@@ -70,14 +67,14 @@ where={
 }
 """
 
-def update_collection(collection, show_ids: list[str], descriptions: list[str]):
+def update_collection(collection: Collection, show_ids: list[str], descriptions: list[str]):
     """Void function: updates collection with new show data"""
     collection.update(
         ids=show_ids,
         documents=descriptions
     )
   
-def upsert_collection(collection, show_ids: list[str], descriptions: list[str]):
+def upsert_collection(collection: Collection, show_ids: list[str], descriptions: list[str]):
     """Void function:
     If IDs are missing -> add them
     If IDs are present -> update them
@@ -87,7 +84,7 @@ def upsert_collection(collection, show_ids: list[str], descriptions: list[str]):
         documents=descriptions
     )  
     
-def delete_shows_from_collection(collection: object, show_ids: str | list[str]):
+def delete_shows_from_collection(collection: Collection, show_ids: str | list[str]):
     if isinstance(show_ids, str):
         show_ids = [show_ids]
     collection.delete(ids=show_ids)
@@ -96,13 +93,13 @@ def delete_collection(collection_name: str):
     client.delete_collection(name=collection_name)
     
 
-def count_shows_in_collection(collection):
+def count_shows_in_collection(collection: Collection):
     return collection.count()
 
 def peek_first_ten(collection):
     return collection.peek()
 
-def retrieve_by_show_id(collection, show_ids: str | list[str]):
+def retrieve_by_show_id(collection: Collection, show_ids: str | list[str]):
     if isinstance(show_ids, str):
         show_ids = [show_ids]
     return collection.get(ids=show_ids)

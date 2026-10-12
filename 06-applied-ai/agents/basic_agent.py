@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-from langchain.agents import create_agent
 from langchain.tools import tool
+from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
 
 load_dotenv()
@@ -35,7 +35,7 @@ def get_current_year() -> int:
 prompt = 'What is 37 multiplied by 48, then add 2025 minus the current year?'
 
 tools = [add_numbers, multiply_numbers, get_current_year]
-agent = create_agent(llm, tools, debug=False)
+agent = create_agent(model=llm, tools=tools, debug=False)
 
 result = agent.invoke({'messages': [HumanMessage(content=prompt)]})
 print('\nFINAL ANSWER:', result['messages'][-1].content)
