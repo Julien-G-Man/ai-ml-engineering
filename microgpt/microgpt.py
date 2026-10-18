@@ -128,7 +128,7 @@ def rmsnorm(x):
 def gpt(token_id, pos_id, keys, values):
     tok_emb = state_dict['wte'][token_id] # token embedding
     pos_emb = state_dict['wpe'][pos_id] # position embedding
-    x = [t + p for t, p in zip(tok_emb, pos_emb)] # joint token and position embedding
+    x: list[Value] = [t + p for t, p in zip(tok_emb, pos_emb)] # joint token and position embedding
     x = rmsnorm(x) # note: not redundant due to backward pass via the residual connection
 
     for li in range(n_layer):
@@ -183,10 +183,10 @@ for step in range(num_steps):
     for pos_id in range(n):
         token_id, target_id = tokens[pos_id], tokens[pos_id + 1]
         logits = gpt(token_id, pos_id, keys, values)
-        probs = softmax(logits)
+        probs  = softmax(logits)
         loss_t = -probs[target_id].log()
         losses.append(loss_t)
-    loss = (1 / n) * sum(losses) # final average loss over the document sequence. May yours be low.
+    loss: Value = (1 / n) * sum(losses) # final average loss over the document sequence. May yours be low.
 
     # Backward the loss, calculating the gradients with respect to all model parameters
     loss.backward()

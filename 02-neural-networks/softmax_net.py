@@ -1,4 +1,3 @@
-import random
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,10 +14,17 @@ def ReLU(a: np.array) -> bool:
     """Activation is either active or inactive"""
     return max(0, 1)
 
-def softmax(z):
+def softmax(logits):
     """subtract max for numerical stability; doesn't change result"""
-    z_shifted = z - np.max(z, axis=1, keepdims=True)
-    exp_scores = np.exp(z_shifted)
+    max_val = np.max(logits, axis=1, keepdims=True)
+    exp_scores = np.exp(logits - max_val)
+    probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
+    return probs
+
+def softmax_with_temperature(logits, temp=5):
+    """softmax, but taking temperature into account"""
+    max_val = np.max(logits, axis=1, keepdims=True)
+    exp_scores = np.exp((logits - max_val) / temp)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
     return probs
 

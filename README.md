@@ -4,9 +4,9 @@ A structured, hands-on personal curriculum through **AI and Machine Learning Eng
 
 This repository originally focused mainly on the **applied AI layer**: LLM APIs, embeddings, RAG, agents, MCP, orchestration, and deployment.
 
-That stage was largely completed through the **DataCamp Associate AI Engineer for Developers** track, alongside additional hands-on work and projects.
+That stage was largely completed through the **[DataCamp Associate AI Engineer for Developers](https://app.datacamp.com/learn/career-tracks/associate-ai-engineer-for-developers)** track, alongside additional hands-on work and projects.
 
-The direction has now shifted deeper.
+The direction has now shifted a bit
 
 The goal is to build stronger foundations in:
 
@@ -64,6 +64,8 @@ Python · NumPy · Pandas · scikit-learn · PyTorch · Hugging Face · OpenAI �
 
 ## Related Work
 
+Check out [NanoNet](https://github.com/Julien-G-Man/nanonet), a tiny neural net implemented from scratch using only Numpy. 
+
 I also participated in a structured **10-Day AI/ML Engineering and Agentic Systems Sprint with NGOT Giants**, with hands-on project work.
 
 See [10-Day AI/ML and Agentic Systems Sprint](https://github.com/Julien-G-Man/10-Day-AI-ML-and-Agentic-Systems-Sprint).
@@ -81,6 +83,3 @@ I document concepts, implementations, experiments, and lessons throughout the re
 🚧 **In progress**
 
 Started: **April 2026**
-
-**Initial focus:** Applied AI engineering
-**Current direction:** deeper ML, deep learning, foundation models, and production AI systems
