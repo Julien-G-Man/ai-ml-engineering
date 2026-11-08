@@ -45,6 +45,7 @@ pyautogen
 
 # API serving
 fastapi
+python-multipart
 uvicorn[standard]
 pydantic
 sqlalchemy

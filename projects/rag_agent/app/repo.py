@@ -13,15 +13,18 @@ class Store:
         
     def get_past_conversations(self) -> list[dict[str, str]]:
         return self.past_messages
+
+    def get_past_messages(self) -> list[dict[str, str]]:
+        return self.get_past_conversations()
     
     def clear_past_conversations(self):
         self.past_messages.clear()
         
     def clear_single_conversation(self, id: int):
-        try:
-           self.past_messages.remove(id - 1)
-        except Exception as e:
-            (f"Could not delete conversation: {e}")
+        index = id - 1
+        if index < 0 or index >= len(self.past_messages):
+            raise IndexError("conversation id was not found")
+        self.past_messages.pop(index)
     
     
 store = Store()

@@ -5,6 +5,8 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from app.repo import store
 from app.tools import convert_currency, tools
+from app.documents import DocumentChunk
+from evaluation.guard_rails import GuardrailPipeline
 from pinecone import Pinecone, ServerlessSpec
 
 load_dotenv()
@@ -37,7 +39,7 @@ class RAGEngine:
                     )
                 )
             
-            self._index = pc.Index('PINECONE_INDEX_NAME') 
+            self._index = pc.Index(PINECONE_INDEX_NAME)
   
             stats = self._index.describe_index_stats() 
             self._vector_count = stats.total_vector_count 
@@ -71,24 +73,59 @@ class RAGEngine:
             )
         except Exception as e:
             logger.error(f"Failed to embed the provided text: {e}")
+            raise RuntimeError("Embedding generation failed") from e
 
-    def retrieve(self, query: str, top_k: int) -> tuple[list[str], list[tuple[str, str]]]:
+    def retrieve(
+        self,
+        query: str,
+        top_k: int,
+        namespace: str = NAMESPACE,
+    ) -> tuple[list[str], list[tuple[str, str]]]:
+        if top_k <= 0:
+            raise ValueError("top_k must be positive")
         query_emb = self.create_embeddings(query).data[0].embedding
         retrieved_docs = []
         sources = []
         docs = self._index.query(
             vector=query_emb, 
             top_k=top_k,
-            namespace=NAMESPACE,
+            namespace=namespace,
             include_metadata=True
         )
         for doc in docs['matches']:
-            retrieved_docs.append(doc["metadata"]["text"])
-            sources.append((doc["metadata"]["title"], doc["metadata"]["url"]))
+            metadata = doc.get("metadata", {})
+            retrieved_docs.append(metadata["text"])
+            sources.append((
+                metadata.get("title", metadata.get("document_id", "Retrieved document")),
+                metadata.get("url", f"document://{metadata.get('document_id', 'unknown')}"),
+            ))
         return retrieved_docs, sources
 
     def upsert(self, vectors):
         self._index.upsert(vectors=vectors, namespace=NAMESPACE)
+
+    def upsert_document(self, chunks: list[DocumentChunk]) -> None:
+        if not chunks:
+            raise ValueError("Cannot index an empty document")
+        embeddings = self.openai_client.embeddings.create(
+            input=[chunk.text for chunk in chunks],
+            model="text-embedding-3-small",
+        )
+        vectors = [
+            {
+                "id": chunk.chunk_id,
+                "values": item.embedding,
+                "metadata": {
+                    "text": chunk.text,
+                    "document_id": chunk.document_id,
+                    "page": chunk.page,
+                    "title": chunk.document_id,
+                    "url": f"document://{chunk.document_id}#page={chunk.page or 1}",
+                },
+            }
+            for chunk, item in zip(chunks, embeddings.data, strict=True)
+        ]
+        self._index.upsert(vectors=vectors, namespace=chunks[0].document_id)
 
 
 class Agent():
@@ -116,6 +153,7 @@ class Agent():
             )
         except Exception as e:
             logger.error(f"Failed to get LLM response: {e}")
+            raise RuntimeError("LLM response generation failed") from e
 
     def generate_response(self, prompt: str, sources: list[tuple[str, str]]) -> str:
         messages = [{"role": "system", "content": self.system_prompt}]
@@ -135,7 +173,16 @@ class Agent():
             if item.type == "function_call":
                 has_function_call = True
                 if item.name == "convert_currency":
-                    result = convert_currency(**json.loads(item.arguments))
+                    arguments = json.loads(item.arguments)
+                    decision = GuardrailPipeline.validate_tool_call(item.name, arguments)
+                    if not decision.allowed:
+                        messages.append({
+                            "type": "function_call_output",
+                            "call_id": item.call_id,
+                            "output": json.dumps({"error": "; ".join(decision.reasons)}),
+                        })
+                        continue
+                    result = convert_currency(**arguments)
                     messages.append({
                         "type":    "function_call_output",
                         "call_id": item.call_id,
@@ -145,11 +192,10 @@ class Agent():
         if has_function_call:
             final_resp = self.client_response(messages)
             messages += final_resp.output
-            logger.info(final_resp.output_text)
+            answer = final_resp.output_text
         else:
-            logger.info(resp.output_text)
+            answer = resp.output_text
 
-        answer = resp.output_text
         answer += "\n\nSources:"
         for source in sources:
             answer += "\n" + source[0] + ": " + source[1]
