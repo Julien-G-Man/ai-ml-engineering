@@ -4,7 +4,7 @@ from pathlib import Path
 from sklearn.neighbors import KNeighborsClassifier
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-CSV_PATH = BASE_DIR / "files" / "telecom_churn_clean.csv"
+CSV_PATH = BASE_DIR / "files/datasets" / "telecom_churn_clean.csv"
 
 churn_df = pd.read_csv(CSV_PATH)
 

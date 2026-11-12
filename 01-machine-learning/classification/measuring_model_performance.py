@@ -14,7 +14,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-CSV_PATH = BASE_DIR / "files" / "telecom_churn_clean.csv"
+CSV_PATH = BASE_DIR / "files/datasets" / "telecom_churn_clean.csv"
 
 churn_df = pd.read_csv(CSV_PATH)
 

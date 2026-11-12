@@ -12,9 +12,9 @@ load_dotenv()
 logger = logging.getLogger("name")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-NETFLIX_TITLES_PATH = Path(__file__).resolve().parents[2] / "files" / "netflix_titles.csv"
+NETFLIX_TITLES_PATH = Path(__file__).resolve().parents[2] / "files/datasets" / "netflix_titles.csv"
 
-client = PersistentClient(path="./chroma_data")
+client = PersistentClient(path="./storage/chroma")
 
 
 def get_or_create_collection(collection_name: str):

@@ -2,7 +2,7 @@
 
 This page follows a simple, three-phase view of LLMOps shown in the diagram below. Use it as a neutral reference that explains what each phase covers and the practical tasks you'll perform in each.
 
-![LLMOps lifecycle](../files/mlops-lifecyle.png)
+![LLMOps lifecycle](../../files/images/mlops-lifecyle.png)
 
 ---
 

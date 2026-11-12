@@ -5,7 +5,7 @@ from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential, load_model
 
 BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
-MODEL_PATH = BASE_DIR / "models" / "tf_model_v1.h5"
+MODEL_PATH = BASE_DIR / "files/models" / "tf_model_v1.h5"
 
 # Sample datasets
 (X_train, y_train), _ = mnist.load_data()

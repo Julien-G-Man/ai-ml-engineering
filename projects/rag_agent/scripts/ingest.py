@@ -7,7 +7,7 @@ from app.engine import RAGEngine, NAMESPACE
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-CSV_PATH = BASE_DIR / "files" / "youtube_rag_data.csv"
+CSV_PATH = BASE_DIR / "files/datasets" / "youtube_rag_data.csv"
 
 
 def ingest_indexes():

@@ -10,7 +10,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 sys_prompt = "You are a helpful Teacher who provides concise, personalized explanations. Be very brief."
 
-IMAGE_PATH = Path(__file__).resolve().parents[2] / "files" / "llm-development-cycle.png"
+IMAGE_PATH = Path(__file__).resolve().parents[2] / "files/images" / "llm-development-cycle.png"
 
 
 def response(messages):

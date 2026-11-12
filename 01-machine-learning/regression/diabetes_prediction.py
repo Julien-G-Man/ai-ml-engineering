@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-CSV_PATH = BASE_DIR / "files" / "diabetes_clean.csv"
+CSV_PATH = BASE_DIR / "files/datasets" / "diabetes_clean.csv"
 
 diabetes_df = pd.read_csv(CSV_PATH)
 

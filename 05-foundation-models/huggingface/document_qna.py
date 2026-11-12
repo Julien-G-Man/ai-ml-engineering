@@ -2,7 +2,7 @@ from pathlib import Path
 from pypdf import PdfReader
 from transformers import pipeline
 
-document = Path(__file__).resolve().parent.parent / "files" / "Masters-AI-Engineering.pdf"
+document = Path(__file__).resolve().parent.parent / "files/pdf" / "Masters-AI-Engineering.pdf"
 if not document.exists():
     raise FileNotFoundError(f"PDF not found: {document}")
 

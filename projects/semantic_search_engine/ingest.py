@@ -8,7 +8,7 @@ index = v_engine.index
 NAMESPACE = "squad-dataset"
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-CSV_PATH = BASE_DIR / "files" / "squad_dataset.csv"
+CSV_PATH = BASE_DIR / "files/datasets" / "squad_dataset.csv"
 
 print(f"Loading CSV from: {CSV_PATH}", flush=True)
 df = pd.read_csv(CSV_PATH)

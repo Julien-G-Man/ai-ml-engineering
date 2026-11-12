@@ -4,7 +4,7 @@ from torch.optim import Adam
 from torch.nn import Sequential, Linear, ReLU, CrossEntropyLoss
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-MODEL_PATH = BASE_DIR / "models" / "pytorch_model_v1.pth"
+MODEL_PATH = BASE_DIR / "files/models" / "pytorch_model_v1.pth"
 
 # dummy data
 X = torch.rand((100, 10))
